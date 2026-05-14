@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: task-api
+
+  datasource:
+      url: jdbc:mysql://10.116.64.14:13306/nhn_academy_22?serverTimezone=Asia/Seoul&useSSL=false
+      username: nhn_academy_22
+      password: "h_8_TkaVj3!4Okzq"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8082
+
+external:
+    account-api:
+        url: http://localhost:8081
