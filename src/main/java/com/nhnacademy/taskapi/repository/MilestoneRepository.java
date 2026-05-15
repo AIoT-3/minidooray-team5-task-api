@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MilestoneRepository extends JpaRepository<Milestone, Long> {
     List<Milestone> findAllByProject_Id(Long projectId);
+
+    void deleteByProject_Id(Long projectId);
 }

@@ -1,37 +1,37 @@
 ### 테스크 리스트 조회
-GET localhost:8082/api/tasks/projects/2/tasks
+GET localhost:8082/api/tasks/projects/7/tasks
 Content-Type: application/json
 X-User-Id: test
 
 ### 테스크 생성
-POST localhost:8082/api/tasks/projects/2/tasks
+POST localhost:8082/api/tasks/projects/7/tasks
 Content-Type: application/json
 X-User-Id: test
 
 {
-  "title": "Test Task",
+  "title": "Test Task 2",
   "content": "This is a test task.",
   "projectId": 2
 }
 
 ### 테스크 단건 조회
-GET localhost:8082/api/tasks/projects/2/tasks/2
+GET localhost:8082/api/tasks/projects/7/tasks/3
 Content-Type: application/json
 X-User-Id: test
 
 ### 테스크 수정
-POST localhost:8082/api/tasks/projects/2/tasks/2
+POST localhost:8082/api/tasks/projects/7/tasks/3
 Content-Type: application/json
 X-User-Id: test
 
 {
   "title": "Updated Test Task",
   "content": "This is an updated test task.",
-  "milestoneId": 2,
-  "tagIds": [1]
+  "milestoneId": 3,
+  "tagIds": [2]
 }
 
 ### 테스크 삭제
-DELETE localhost:8082/api/tasks/projects/2/tasks/2
+DELETE localhost:8082/api/tasks/projects/7/tasks/3
 Content-Type: application/json
 X-User-Id: test

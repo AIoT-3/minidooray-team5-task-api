@@ -30,6 +30,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskTagRepository taskTagRepository;
     private final MilestoneRepository mileStoneRepository;
     private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
     // 프로젝트 내 모든 테스크 조회
     @Override
@@ -42,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
         // TaskSummaryResponse로 변환하여 반환
         return tasks.stream().map(task -> {
             // 마일스톤 이름
-            String milestoneName=task.getMileStone()!=null?task.getMileStone().getName():null;
+            String milestoneName=task.getMilestone()!=null?task.getMilestone().getName():null;
 
             // 태그 이름 리스트
             List<String> tags=task.getTaskTags().stream().map(
@@ -109,11 +110,11 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException(taskId+"번 테스크를 찾을 수 없습니다."));
 
         // MilestoneResponse 생성
-        MilestoneResponse milestone=task.getMileStone()==null?null:
+        MilestoneResponse milestone=task.getMilestone()==null?null:
                 MilestoneResponse.builder()
-                        .milestoneId(task.getMileStone().getId())
-                        .name(task.getMileStone().getName())
-                        .status(task.getMileStone().getStatus())
+                        .milestoneId(task.getMilestone().getId())
+                        .name(task.getMilestone().getName())
+                        .status(task.getMilestone().getStatus())
                         .build();
 
         // TagResponse 리스트 생성
@@ -241,7 +242,10 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException(taskId+"번 테스크를 찾을 수 없습니다."));
 
         // 테스크에 매핑된 TaskTag 모두 삭제
-        taskTagRepository.deleteAll(task.getTaskTags());
+        taskTagRepository.deleteByTask_Id(task.getId());
+
+        // 테스크에 매핑된 Comment 모두 삭제
+        commentRepository.deleteByTask_Id(task.getId());
 
         // 테스크 삭제
         taskRepository.delete(task);

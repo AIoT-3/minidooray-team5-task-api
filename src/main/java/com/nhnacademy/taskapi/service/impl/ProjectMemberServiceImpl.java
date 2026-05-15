@@ -71,6 +71,8 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     // 프로젝트 멤버 삭제
+    // todo : 고민 해보기: 프로젝트 멤버 삭제 -> tasks와 comments에 있는 userId는 어떻게 처리할 것인가?
+    //  일단은 프로젝트 멤버 삭제 -> tasks와 comments에 있는 userId는 그대로 유지
     @Override
     @Transactional
     public void deleteMember(Long projectId, String userId, String memberId) {

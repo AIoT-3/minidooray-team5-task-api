@@ -9,6 +9,7 @@ import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
 import com.nhnacademy.taskapi.repository.TagRepository;
+import com.nhnacademy.taskapi.repository.TaskTagRepository;
 import com.nhnacademy.taskapi.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.util.List;
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
+    private final TaskTagRepository taskTagRepository;
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
 
@@ -101,6 +103,9 @@ public class TagServiceImpl implements TagService {
         // 태그 조회
         Tag tag=tagRepository.findById(tagId)
                 .orElseThrow(() -> new ResourceNotFoundException("태그를 찾을 수 없습니다."));
+
+        // 태그와 연관된 TaskTag 삭제
+        taskTagRepository.deleteByTag_Id(tagId);
 
         // 태그 삭제
         tagRepository.delete(tag);

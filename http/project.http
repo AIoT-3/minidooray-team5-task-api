@@ -18,12 +18,12 @@ Content-Type: application/json
 X-User-Id: test
 
 ### Project 단건 조회
-GET localhost:8082/api/tasks/projects/2
+GET localhost:8082/api/tasks/projects/7
 Content-Type: application/json
 X-User-Id: test
 
 ### Project 수정
-POST localhost:8082/api/tasks/projects/2
+POST localhost:8082/api/tasks/projects/7
 Content-Type: application/json
 X-User-Id: test
 
@@ -33,7 +33,7 @@ X-User-Id: test
 }
 
 ### Project 삭제
-DELETE localhost:8082/api/tasks/projects/2
+DELETE localhost:8082/api/tasks/projects/7
 Content-Type: application/json
 X-User-Id: test
 
