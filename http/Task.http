@@ -27,8 +27,8 @@ X-User-Id: test
 {
   "title": "Updated Test Task",
   "content": "This is an updated test task.",
-  "milestoneId": null,
-  "tagIds": []
+  "milestoneId": 2,
+  "tagIds": [1]
 }
 
 ### 테스크 삭제
