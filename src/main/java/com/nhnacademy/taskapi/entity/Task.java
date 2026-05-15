@@ -34,7 +34,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name="milestone_id", nullable = true)
-    private MileStone mileStone;
+    private Milestone mileStone;
 
     @OneToMany(mappedBy="task")
     private List<TaskTag> taskTags;
@@ -48,7 +48,7 @@ public class Task {
     }
 
     @Builder
-    public Task(String title, String content, String userId, Project project, MileStone mileStone) {
+    public Task(String title, String content, String userId, Project project, Milestone mileStone) {
         this.title=title;
         this.content=content;
         this.userId=userId;
@@ -56,7 +56,7 @@ public class Task {
         this.mileStone=mileStone;
     }
 
-    public void update(String title, String content, MileStone mileStone, List<TaskTag> taskTags) {
+    public void update(String title, String content, Milestone mileStone, List<TaskTag> taskTags) {
         this.title = title;
         this.content = content;
         this.mileStone = mileStone;

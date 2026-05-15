@@ -28,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final TaskTagRepository taskTagRepository;
-    private final MileStoneRepository mileStoneRepository;
+    private final MilestoneRepository mileStoneRepository;
     private final TagRepository tagRepository;
 
     // 프로젝트 내 모든 테스크 조회
@@ -113,6 +113,7 @@ public class TaskServiceImpl implements TaskService {
                 MilestoneResponse.builder()
                         .milestoneId(task.getMileStone().getId())
                         .name(task.getMileStone().getName())
+                        .status(task.getMileStone().getStatus())
                         .build();
 
         // TagResponse 리스트 생성
@@ -148,7 +149,7 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException(taskId + "번 테스크를 찾을 수 없습니다."));
 
         // 마일스톤 조회 (milestoneId가 null이 아닌 경우에만 조회)
-        MileStone mileStone = null;
+        Milestone mileStone = null;
         if (req.milestoneId() != null) {
             mileStone = mileStoneRepository.findById(req.milestoneId())
                     .orElseThrow(() -> new ResourceNotFoundException(req.milestoneId() + "번 마일스톤을 찾을 수 없습니다."));
@@ -204,6 +205,7 @@ public class TaskServiceImpl implements TaskService {
                 MilestoneResponse.builder()
                         .milestoneId(mileStone.getId())
                         .name(mileStone.getName())
+                        .status(mileStone.getStatus())
                         .build();
 
         // 업데이트된 태그 매핑 기준으로 TagResponse 리스트 생성

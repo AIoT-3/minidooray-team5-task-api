@@ -90,6 +90,7 @@ public class CommentServiceImpl implements CommentService {
 
         // 댓글이 해당 테스크의 댓글인지 확인
         if(!Objects.equals(comment.getTask().getId(), taskId)) {
+            log.warn("Comment {} does not belong to Task {} - get", commentId, taskId);
             throw new ResourceNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
         }
 
@@ -115,11 +116,13 @@ public class CommentServiceImpl implements CommentService {
 
         // 댓글이 해당 테스크의 댓글인지 확인
         if(!Objects.equals(comment.getTask().getId(), taskId)) {
+            log.warn("Comment {} does not belong to Task {} - update", commentId, taskId);
             throw new ResourceNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
         }
 
         // 댓글 작성자 본인인지 확인
         if(!Objects.equals(comment.getUserId(), userId)) {
+            log.warn("User {} is not the author of Comment {} - update", userId, commentId);
             throw new ResourceNotAllowException("댓글 작성자만 수정할 수 있습니다.");
         }
 
@@ -147,11 +150,13 @@ public class CommentServiceImpl implements CommentService {
 
         // 댓글이 해당 테스크의 댓글인지 확인
         if(!Objects.equals(comment.getTask().getId(), taskId)) {
+            log.warn("Comment {} does not belong to Task {} - delete", commentId, taskId);
             throw new ResourceNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
         }
 
         // 댓글 작성자 본인인지 확인
         if(!Objects.equals(comment.getUserId(), userId)) {
+            log.warn("User {} is not the author of Comment {} - delete", userId, commentId);
             throw new ResourceNotAllowException("댓글 작성자만 삭제할 수 있습니다.");
         }
 
