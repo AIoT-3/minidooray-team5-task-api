@@ -5,10 +5,10 @@ import com.nhnacademy.taskapi.dto.project.ProjectResponse;
 import com.nhnacademy.taskapi.dto.project.ProjectUpdateRequest;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.ProjectMember;
+import com.nhnacademy.taskapi.entity.Task;
 import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
 import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
-import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
-import com.nhnacademy.taskapi.repository.ProjectRepository;
+import com.nhnacademy.taskapi.repository.*;
 import com.nhnacademy.taskapi.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final TagRepository tagRepository;
+    private final MilestoneRepository milestoneRepository;
+    private final TaskRepository taskRepository;
+    private final TaskTagRepository taskTagRepository;
+    private final CommentRepository commentRepository;
 
     // 프로젝트 생성
     @Override
@@ -129,6 +134,21 @@ public class ProjectServiceImpl implements ProjectService {
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
+
+        // 프로젝트완 연관된 프로젝트 멤버 삭제
+        taskTagRepository.deleteAllByProjectIdInBulk(projectId);
+
+        // 프로젝트완 연관된 댓글 삭제
+        commentRepository.deleteAllByProjectIdInBulk(projectId);
+
+        // 프로젝트완 연관된 테스크 삭제
+        taskRepository.deleteByProject_Id(projectId);
+
+        // 프로젝트완 연관된 태그 삭제
+        tagRepository.deleteByProject_Id(projectId);
+
+        // 프로젝트완 연관된 마일스톤 삭제
+        milestoneRepository.deleteByProject_Id(projectId);
 
         // 프로젝트 삭제 -> 연관된 프로젝트 멤버도 함께 삭제
         projectRepository.delete(project);

@@ -8,4 +8,6 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
     List<Tag> findAllByProject_Id(Long projectId);
+
+    void deleteByProject_Id(Long projectId);
 }

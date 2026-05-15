@@ -6,11 +6,13 @@ import com.nhnacademy.taskapi.dto.milestone.MilestoneUpdateRequest;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.MilestoneStatus;
 import com.nhnacademy.taskapi.entity.Project;
+import com.nhnacademy.taskapi.entity.Task;
 import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
 import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
 import com.nhnacademy.taskapi.repository.MilestoneRepository;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
+import com.nhnacademy.taskapi.repository.TaskRepository;
 import com.nhnacademy.taskapi.service.MilestoneService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ public class MilestoneServiceImpl implements MilestoneService {
 
     private final ProjectRepository projectRepository;
     private final MilestoneRepository mileStoneRepository;
+    private final TaskRepository taskRepository;
     private final ProjectMemberRepository projectMemberRepository;
 
     // 마일스톤 목록 조회
@@ -140,6 +143,8 @@ public class MilestoneServiceImpl implements MilestoneService {
         if(!Objects.equals(milestone.getProject().getId(), projectId)) {
             throw new ResourceNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
         }
+
+        taskRepository.updateMilestoneToNullByMilestoneId(milestoneId);
 
         // 마일스톤 삭제
         mileStoneRepository.delete(milestone);
