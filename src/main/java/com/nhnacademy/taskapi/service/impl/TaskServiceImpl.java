@@ -137,6 +137,7 @@ public class TaskServiceImpl implements TaskService {
                 .build();
     }
 
+    // 테스크 업데이트
     @Override
     @Transactional
     public TaskDetailResponse updateTask(Long projectId, String userId, Long taskId, TaskUpdateRequest req) {

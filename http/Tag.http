@@ -1,0 +1,27 @@
+### 태그 리스트 조회
+GET localhost:8082/api/tasks/projects/2/tags
+Content-Type: application/json
+X-User-Id: test
+
+### 태그 생성
+POST localhost:8082/api/tasks/projects/2/tags
+Content-Type: application/json
+X-User-Id: test
+
+{
+  "name": "Test_Tag"
+}
+
+### 태그 업데이트
+POST localhost:8082/api/tasks/projects/2/tags/2
+Content-Type: application/json
+X-User-Id: test
+
+{
+  "name": "Updated_Test_Tag"
+}
+
+### 태그 삭제
+DELETE localhost:8082/api/tasks/projects/2/tags/2
+Content-Type: application/json
+X-User-Id: test
