@@ -25,7 +25,7 @@ public class Project {
     @Column(name="status", nullable = false)
     private ProjectStatus status;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectMember> memberList=new ArrayList<>();
 
     @Builder

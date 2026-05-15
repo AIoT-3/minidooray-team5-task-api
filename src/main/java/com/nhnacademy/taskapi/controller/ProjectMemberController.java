@@ -49,8 +49,9 @@ public class ProjectMemberController {
             @PathVariable("userId") String memberId,
             @RequestHeader("X-User-Id") String userId
     ) {
+        projectMemberService.deleteMember(projectId, userId, memberId);
 
-        return null;
+        return ResponseEntity.noContent().build();
     }
 
 }
