@@ -5,8 +5,8 @@ import com.nhnacademy.taskapi.dto.project.ProjectResponse;
 import com.nhnacademy.taskapi.dto.project.ProjectUpdateRequest;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.ProjectMember;
-import com.nhnacademy.taskapi.exception.ProjectNotAllowException;
-import com.nhnacademy.taskapi.exception.ProjectNotFoundException;
+import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
+import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
 import com.nhnacademy.taskapi.service.ProjectService;
@@ -62,11 +62,11 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectResponse getProject(Long projectId, String userId) {
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
-                .orElseThrow(()->new ProjectNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(()->new ResourceNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
 
         // 프로젝트 멤버 조회 -> 프로젝트 참여 여부 확인
         ProjectMember projectMember=projectMemberRepository.findByProject_IdAndUserId(projectId, userId)
-                .orElseThrow(() -> new ProjectNotAllowException(projectId+"번 프로젝트는" + userId + "님이 참여하고 있지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(projectId+"번 프로젝트는" + userId + "님이 참여하고 있지 않습니다."));
 
         // 응답 반환
         return ProjectResponse.builder()
@@ -90,16 +90,16 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectResponse updateProject(Long projectId, ProjectUpdateRequest req, String userId) {
         // 프로젝트 멤버 조회 -> 프로젝트 참여 여부 확인
         ProjectMember projectMember=projectMemberRepository.findByProject_IdAndUserId(projectId, userId)
-                .orElseThrow(() -> new ProjectNotAllowException(projectId+"번 프로젝트는" + userId + "님이 참여하고 있지 않습니다."));
+                .orElseThrow(() -> new ResourceNotAllowException(projectId+"번 프로젝트는" + userId + "님이 참여하고 있지 않습니다."));
 
         // 프로젝트 멤버 권한 확인
         if(!projectMember.isAdmin()) {
-            throw new ProjectNotAllowException(projectId+"번 프로젝트는" + userId + "님이 관리자 권한이 없습니다.");
+            throw new ResourceNotAllowException(projectId+"번 프로젝트는" + userId + "님이 관리자 권한이 없습니다.");
         }
 
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
 
         // 프로젝트 수정
         project.update(req.name(), req.status());
@@ -114,26 +114,23 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     // 프로젝트 삭제
-    @Transactional
     @Override
+    @Transactional
     public void deleteProject(Long projectId, String userId) {
         // 프로젝트 멤버 조회 -> 프로젝트 차며 여부 확인
         ProjectMember projectMember=projectMemberRepository.findByProject_IdAndUserId(projectId, userId)
-                .orElseThrow(() -> new ProjectNotAllowException(projectId+"번 프로젝트는" + userId + "님이 참여하고 있지 않습니다."));
+                .orElseThrow(() -> new ResourceNotAllowException(projectId+"번 프로젝트는" + userId + "님이 참여하고 있지 않습니다."));
 
         // 프로젝트 멤버 권한 확인
         if(!projectMember.isAdmin()) {
-            throw new ProjectNotAllowException(projectId+"번 프로젝트는" + userId + "님이 관리자 권한이 없습니다.");
+            throw new ResourceNotAllowException(projectId+"번 프로젝트는" + userId + "님이 관리자 권한이 없습니다.");
         }
 
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
 
-        // 프로젝트 멤버 삭제 -> 프로젝트 삭제 전에 연관된 멤버 삭제
-        projectMemberRepository.deleteAllByProject_Id(projectId);
-
-        // 프로젝트 삭제
+        // 프로젝트 삭제 -> 연관된 프로젝트 멤버도 함께 삭제
         projectRepository.delete(project);
     }
 }

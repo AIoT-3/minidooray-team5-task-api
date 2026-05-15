@@ -23,9 +23,7 @@ public class ProjectController {
     // 프로젝트 목록 조회
     @GetMapping
     public ResponseEntity<List<ProjectResponse>> getProjects(
-            @RequestHeader("X-User-Id") String userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestHeader("X-User-Id") String userId
     ) {
         List<ProjectResponse> projects=projectService.getProjects(userId);
 
