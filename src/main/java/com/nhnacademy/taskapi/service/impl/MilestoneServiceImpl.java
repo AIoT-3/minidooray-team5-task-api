@@ -6,9 +6,10 @@ import com.nhnacademy.taskapi.dto.milestone.MilestoneUpdateRequest;
 import com.nhnacademy.taskapi.entity.Milestone;
 import com.nhnacademy.taskapi.entity.MilestoneStatus;
 import com.nhnacademy.taskapi.entity.Project;
-import com.nhnacademy.taskapi.entity.Task;
-import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
-import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
+import com.nhnacademy.taskapi.exception.allow.ex.MilestoneNotAllowException;
+import com.nhnacademy.taskapi.exception.notfound.ex.MilestoneNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectMemberNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectNotFoundException;
 import com.nhnacademy.taskapi.repository.MilestoneRepository;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
@@ -65,7 +66,7 @@ public class MilestoneServiceImpl implements MilestoneService {
 
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResourceNotFoundException(projectId+"프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         // 마일스톤에 프로젝트 설정
         milestone.setProject(project);
@@ -88,11 +89,11 @@ public class MilestoneServiceImpl implements MilestoneService {
 
         // 마일스톤 조회
         Milestone milestone=mileStoneRepository.findById(milestoneId)
-                .orElseThrow(() -> new ResourceNotFoundException(milestoneId+"마일스톤을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MilestoneNotFoundException(milestoneId));
 
         // 마일스톤이 해당 프로젝트에 속해있는지 확인
         if(!Objects.equals(milestone.getProject().getId(), projectId)) {
-            throw new ResourceNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
+            throw new MilestoneNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
         }
 
         // 응답 반환 Milestone -> MilestoneResponse
@@ -111,11 +112,11 @@ public class MilestoneServiceImpl implements MilestoneService {
 
         // 마일스톤 조회
         Milestone milestone=mileStoneRepository.findById(milestoneId)
-                .orElseThrow(() -> new ResourceNotFoundException(milestoneId+"마일스톤을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MilestoneNotFoundException(milestoneId));
 
         // 마일스톤이 해당 프로젝트에 속해있는지 확인
         if(!Objects.equals(milestone.getProject().getId(), projectId)) {
-            throw new ResourceNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
+            throw new MilestoneNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
         }
 
         // 마일스톤 업데이트
@@ -137,11 +138,11 @@ public class MilestoneServiceImpl implements MilestoneService {
 
         // 마일스톤 조회
         Milestone milestone=mileStoneRepository.findById(milestoneId)
-                .orElseThrow(() -> new ResourceNotFoundException(milestoneId+"마일스톤을 찾을 수 없습니다."));
+                .orElseThrow(() -> new MilestoneNotFoundException(milestoneId));
 
         // 마일스톤이 해당 프로젝트에 속해있는지 확인
         if(!Objects.equals(milestone.getProject().getId(), projectId)) {
-            throw new ResourceNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
+            throw new MilestoneNotAllowException("해당 마일스톤은 해당 프로젝트에 속해있지 않습니다.");
         }
 
         taskRepository.updateMilestoneToNullByMilestoneId(milestoneId);
@@ -153,7 +154,7 @@ public class MilestoneServiceImpl implements MilestoneService {
     // 유저가 프로젝트 멤버인지 확인
     private void checkUser(Long projectId, String userId) {
         if(!projectMemberRepository.existsByProject_IdAndUserId(projectId, userId)) {
-            throw new ResourceNotFoundException("프로젝트 멤버가 아닙니다.");
+            throw new ProjectMemberNotFoundException("프로젝트 멤버가 아닙니다.");
         }
     }
 }

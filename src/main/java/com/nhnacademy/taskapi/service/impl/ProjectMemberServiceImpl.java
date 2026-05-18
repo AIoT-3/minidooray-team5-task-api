@@ -2,8 +2,9 @@ package com.nhnacademy.taskapi.service.impl;
 
 import com.nhnacademy.taskapi.dto.project_member.ProjectMemberResponse;
 import com.nhnacademy.taskapi.entity.ProjectMember;
-import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
-import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectMemberNotFoundException;
+import com.nhnacademy.taskapi.exception.allow.ex.ProjectNotAllowException;
+import com.nhnacademy.taskapi.exception.notfound.ex.UserNotFoundException;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.service.AccountClientService;
 import com.nhnacademy.taskapi.service.ProjectMemberService;
@@ -32,7 +33,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
 
         // 조회하는 유저가 프로젝트 멤버인지 확인
         if(members.stream().noneMatch(m->m.getUserId().equals(userId))) {
-            throw new ResourceNotAllowException("프로젝트 멤버가 아닙니다.");
+            throw new ProjectNotAllowException("프로젝트 멤버가 아닙니다.");
         }
 
         // 응답 반환 ProjectMember -> ProjectMemberResponse
@@ -49,16 +50,16 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public ProjectMemberResponse addMember(Long projectId, String userId, String newMemberId) {
         // 프로젝트 멤버 조회 -> 추가하는 유저가 프로젝트 멤버인지 확인
         ProjectMember projectmember=projectMemberRepository.findByProject_IdAndUserId(projectId, userId)
-                .orElseThrow(()->new ResourceNotFoundException("프로젝트 멤버가 아닙니다."));
+                .orElseThrow(()->new ProjectMemberNotFoundException("프로젝트 멤버가 아닙니다."));
 
         // 조회하는 유저가 프로젝트 멤버인지 확인 -> 조회하는 유저가 프로젝트 관리자(admin)인지 확인
         if(!projectmember.isAdmin()) {
-            throw new ResourceNotAllowException("프로젝트 관리자만 멤버를 추가할 수 있습니다.");
+            throw new ProjectNotAllowException("프로젝트 관리자만 멤버를 추가할 수 있습니다.");
         }
 
         // 추가할 멤버가 존재하는 유저인지 확인 -> account-api에 요청
         if(!accountClientService.checkUserExists(newMemberId)) {
-            throw new ResourceNotFoundException(newMemberId+"추가할 멤버가 존재하지 않습니다.");
+            throw new UserNotFoundException(newMemberId+"추가할 멤버가 존재하지 않습니다.");
         }
 
         // 멤버 추가 -> 프로젝트 멤버 생성
@@ -85,16 +86,16 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public void deleteMember(Long projectId, String userId, String memberId) {
         // 프로젝트 멤버 조회 -> 삭제 요청을 하는 유저가 프로젝트 멤버인지 확인
         ProjectMember projectmember=projectMemberRepository.findByProject_IdAndUserId(projectId, userId)
-                .orElseThrow(()->new ResourceNotFoundException("프로젝트 멤버가 아닙니다."));
+                .orElseThrow(()->new ProjectMemberNotFoundException("프로젝트 멤버가 아닙니다."));
 
         // 삭제 요청을 하는 유저가 프로젝트 관리자 or 본인인지 확인
         if(!projectmember.isAdmin()&&!projectmember.getUserId().equals(memberId)) {
-            throw new ResourceNotAllowException("프로젝트 관리자나 본인만 삭제할 수 있습니다.");
+            throw new ProjectNotAllowException("프로젝트 관리자나 본인만 삭제할 수 있습니다.");
         }
 
         // 삭제할 멤버 조회 -> 삭제할 멤버가 프로젝트 멤버인지 확인
         ProjectMember member=projectMemberRepository.findByProject_IdAndUserId(projectId, memberId)
-                .orElseThrow(()->new ResourceNotFoundException("삭제할 멤버가 프로젝트 멤버가 아닙니다."));
+                .orElseThrow(()->new ProjectMemberNotFoundException("삭제할 멤버가 프로젝트 멤버가 아닙니다."));
 
         // 멤버 삭제
         projectMemberRepository.delete(member);
