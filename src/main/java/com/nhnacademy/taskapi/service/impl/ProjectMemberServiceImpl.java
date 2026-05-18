@@ -5,6 +5,7 @@ import com.nhnacademy.taskapi.entity.ProjectMember;
 import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
 import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
+import com.nhnacademy.taskapi.service.AccountClientService;
 import com.nhnacademy.taskapi.service.ProjectMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class ProjectMemberServiceImpl implements ProjectMemberService {
 
     private final ProjectMemberRepository projectMemberRepository;
+    private final AccountClientService accountClientService;
 
     // 프로젝트 멤버 조회
     @Override
@@ -52,6 +54,11 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         // 조회하는 유저가 프로젝트 멤버인지 확인 -> 조회하는 유저가 프로젝트 관리자(admin)인지 확인
         if(!projectmember.isAdmin()) {
             throw new ResourceNotAllowException("프로젝트 관리자만 멤버를 추가할 수 있습니다.");
+        }
+
+        // 추가할 멤버가 존재하는 유저인지 확인 -> account-api에 요청
+        if(!accountClientService.checkUserExists(newMemberId)) {
+            throw new ResourceNotFoundException(newMemberId+"추가할 멤버가 존재하지 않습니다.");
         }
 
         // 멤버 추가 -> 프로젝트 멤버 생성
