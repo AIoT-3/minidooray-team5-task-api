@@ -1,5 +1,7 @@
 package com.nhnacademy.taskapi.exception;
 
+import com.nhnacademy.taskapi.exception.allow.ResourceNotAllowException;
+import com.nhnacademy.taskapi.exception.notfound.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

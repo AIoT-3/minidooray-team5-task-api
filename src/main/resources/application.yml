@@ -21,4 +21,11 @@ server:
 
 external:
     account-api:
-        url: http://localhost:8081
+        url: http://localhost:8081/api/accounts
+
+eureka:
+  client:
+    server-url:
+      defaultZone: http://localhost:8761/eureka/
+    jersey:
+      enabled: false

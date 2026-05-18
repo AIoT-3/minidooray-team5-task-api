@@ -5,7 +5,9 @@ import com.nhnacademy.taskapi.dto.tag.TagResponse;
 import com.nhnacademy.taskapi.dto.tag.TagUpdateRequest;
 import com.nhnacademy.taskapi.entity.Project;
 import com.nhnacademy.taskapi.entity.Tag;
-import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectMemberNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.TagNotFoundException;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.repository.ProjectRepository;
 import com.nhnacademy.taskapi.repository.TagRepository;
@@ -59,7 +61,7 @@ public class TagServiceImpl implements TagService {
 
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResourceNotFoundException("프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException("프로젝트를 찾을 수 없습니다."));
 
         // 태그에 프로젝트 설정
         tag.setProject(project);
@@ -82,7 +84,7 @@ public class TagServiceImpl implements TagService {
 
         // 태그 조회
         Tag tag=tagRepository.findById(tagId)
-                .orElseThrow(() -> new ResourceNotFoundException("태그를 찾을 수 없습니다."));
+                .orElseThrow(() -> new TagNotFoundException("태그를 찾을 수 없습니다."));
 
         // 태그 업데이트
         tag.setName(req.name());
@@ -102,7 +104,7 @@ public class TagServiceImpl implements TagService {
 
         // 태그 조회
         Tag tag=tagRepository.findById(tagId)
-                .orElseThrow(() -> new ResourceNotFoundException("태그를 찾을 수 없습니다."));
+                .orElseThrow(() -> new TagNotFoundException("태그를 찾을 수 없습니다."));
 
         // 태그와 연관된 TaskTag 삭제
         taskTagRepository.deleteByTag_Id(tagId);
@@ -114,7 +116,7 @@ public class TagServiceImpl implements TagService {
     // 유저가 프로젝트 멤버인지 확인
     private void checkUser(Long projectId, String userId) {
         if(!projectMemberRepository.existsByProject_IdAndUserId(projectId, userId)) {
-            throw new ResourceNotFoundException("프로젝트 멤버가 아닙니다.");
+            throw new ProjectMemberNotFoundException("프로젝트 멤버가 아닙니다.");
         }
     }
 }

@@ -5,8 +5,10 @@ import com.nhnacademy.taskapi.dto.comment.CommentResponse;
 import com.nhnacademy.taskapi.dto.comment.CommentUpdateRequest;
 import com.nhnacademy.taskapi.entity.Comment;
 import com.nhnacademy.taskapi.entity.Task;
-import com.nhnacademy.taskapi.exception.ResourceNotAllowException;
-import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
+import com.nhnacademy.taskapi.exception.allow.ex.CommentNotAllowException;
+import com.nhnacademy.taskapi.exception.notfound.ex.CommentNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectMemberNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.TaskNotFoundException;
 import com.nhnacademy.taskapi.repository.CommentRepository;
 import com.nhnacademy.taskapi.repository.ProjectMemberRepository;
 import com.nhnacademy.taskapi.repository.TaskRepository;
@@ -62,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
 
         // 테스크 조회
         Task task=taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException(taskId+"의 테스크가 없습니다."));
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
 
         // 댓글에 테스크 설정
         comment.setTask(task);
@@ -86,12 +88,11 @@ public class CommentServiceImpl implements CommentService {
 
         // 댓글 조회
         Comment comment=commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException(commentId+"의 댓글이 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         // 댓글이 해당 테스크의 댓글인지 확인
         if(!Objects.equals(comment.getTask().getId(), taskId)) {
-            log.warn("Comment {} does not belong to Task {} - get", commentId, taskId);
-            throw new ResourceNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
+            throw new CommentNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
         }
 
         // 응답 반환 Comment -> CommentResponse
@@ -112,18 +113,16 @@ public class CommentServiceImpl implements CommentService {
 
         // 댓글 조회
         Comment comment=commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException(commentId+"의 댓글이 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         // 댓글이 해당 테스크의 댓글인지 확인
         if(!Objects.equals(comment.getTask().getId(), taskId)) {
-            log.warn("Comment {} does not belong to Task {} - update", commentId, taskId);
-            throw new ResourceNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
+            throw new CommentNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
         }
 
         // 댓글 작성자 본인인지 확인
         if(!Objects.equals(comment.getUserId(), userId)) {
-            log.warn("User {} is not the author of Comment {} - update", userId, commentId);
-            throw new ResourceNotAllowException("댓글 작성자만 수정할 수 있습니다.");
+            throw new CommentNotAllowException("댓글 작성자만 수정할 수 있습니다.");
         }
 
         // 댓글 수정
@@ -146,18 +145,16 @@ public class CommentServiceImpl implements CommentService {
 
         // 댓글 조회
         Comment comment=commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException(commentId+"의 댓글이 없습니다."));
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         // 댓글이 해당 테스크의 댓글인지 확인
         if(!Objects.equals(comment.getTask().getId(), taskId)) {
-            log.warn("Comment {} does not belong to Task {} - delete", commentId, taskId);
-            throw new ResourceNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
+            throw new CommentNotAllowException("테스크 "+taskId+"의 댓글이 아닙니다.");
         }
 
         // 댓글 작성자 본인인지 확인
         if(!Objects.equals(comment.getUserId(), userId)) {
-            log.warn("User {} is not the author of Comment {} - delete", userId, commentId);
-            throw new ResourceNotAllowException("댓글 작성자만 삭제할 수 있습니다.");
+            throw new CommentNotAllowException("댓글 작성자만 삭제할 수 있습니다.");
         }
 
         // 댓글 삭제
@@ -167,7 +164,7 @@ public class CommentServiceImpl implements CommentService {
     // 유저가 프로젝트 멤버인지 확인
     private void checkUser(Long projectId, String userId) {
         if(!projectMemberRepository.existsByProject_IdAndUserId(projectId, userId)) {
-            throw new ResourceNotFoundException("프로젝트 멤버가 아닙니다.");
+            throw new ProjectMemberNotFoundException("프로젝트 멤버가 아닙니다.");
         }
     }
 }

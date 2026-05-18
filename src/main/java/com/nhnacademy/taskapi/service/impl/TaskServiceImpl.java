@@ -7,7 +7,10 @@ import com.nhnacademy.taskapi.dto.task.TaskDetailResponse;
 import com.nhnacademy.taskapi.dto.task.TaskSummaryResponse;
 import com.nhnacademy.taskapi.dto.task.TaskUpdateRequest;
 import com.nhnacademy.taskapi.entity.*;
-import com.nhnacademy.taskapi.exception.ResourceNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.MilestoneNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectMemberNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.ProjectNotFoundException;
+import com.nhnacademy.taskapi.exception.notfound.ex.TaskNotFoundException;
 import com.nhnacademy.taskapi.repository.*;
 import com.nhnacademy.taskapi.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
 
         // 프로젝트 조회
         Project project=projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResourceNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId+"번 프로젝트를 찾을 수 없습니다."));
 
         // 프로젝트 설정 -> 연관관계 설정
         task.setProject(project);
@@ -107,7 +110,7 @@ public class TaskServiceImpl implements TaskService {
 
         // 테스크 조회
         Task task=taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException(taskId+"번 테스크를 찾을 수 없습니다."));
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
 
         // MilestoneResponse 생성
         MilestoneResponse milestone=task.getMilestone()==null?null:
@@ -147,13 +150,13 @@ public class TaskServiceImpl implements TaskService {
 
         // 테스크 조회
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException(taskId + "번 테스크를 찾을 수 없습니다."));
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
 
         // 마일스톤 조회 (milestoneId가 null이 아닌 경우에만 조회)
         Milestone mileStone = null;
         if (req.milestoneId() != null) {
             mileStone = mileStoneRepository.findById(req.milestoneId())
-                    .orElseThrow(() -> new ResourceNotFoundException(req.milestoneId() + "번 마일스톤을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new MilestoneNotFoundException(req.milestoneId() + "번 마일스톤을 찾을 수 없습니다."));
         }
 
         // 업데이트 대상 TaskTag 리스트 초기화 -> 기존 매핑된 태그 리스트로 시작
@@ -239,7 +242,7 @@ public class TaskServiceImpl implements TaskService {
 
         // 테스크 조회
         Task task=taskRepository.findById(taskId)
-                .orElseThrow(() -> new ResourceNotFoundException(taskId+"번 테스크를 찾을 수 없습니다."));
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
 
         // 테스크에 매핑된 TaskTag 모두 삭제
         taskTagRepository.deleteByTask_Id(task.getId());
@@ -255,7 +258,7 @@ public class TaskServiceImpl implements TaskService {
     // 유저가 프로젝트 멤버인지 확인
     private void checkUser(Long projectId, String userId) {
         if(!projectMemberRepository.existsByProject_IdAndUserId(projectId, userId)) {
-            throw new ResourceNotFoundException("프로젝트 멤버가 아닙니다.");
+            throw new ProjectMemberNotFoundException("프로젝트 멤버가 아닙니다.");
         }
     }
 }
