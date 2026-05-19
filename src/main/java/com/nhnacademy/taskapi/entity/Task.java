@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter @Setter
 @Entity @Table(name="task")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,7 +35,13 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name="milestone_id", nullable = true)
-    private MileStone mileStone;
+    private Milestone milestone;
+
+    @OneToMany(mappedBy="task")
+    private List<TaskTag> taskTags=new ArrayList<>();
+
+    @OneToMany(mappedBy = "task")
+    private List<Comment> comments=new ArrayList<>();
 
     @Builder
     public Task(String title, String content, String userId, Project project) {
@@ -40,11 +49,18 @@ public class Task {
     }
 
     @Builder
-    public Task(String title, String content, String userId, Project project, MileStone mileStone) {
+    public Task(String title, String content, String userId, Project project, Milestone milestone) {
         this.title=title;
         this.content=content;
         this.userId=userId;
         this.project=project;
-        this.mileStone=mileStone;
+        this.milestone=milestone;
+    }
+
+    public void update(String title, String content, Milestone milestone, List<TaskTag> taskTags) {
+        this.title = title;
+        this.content = content;
+        this.milestone = milestone;
+        this.taskTags = taskTags;
     }
 }

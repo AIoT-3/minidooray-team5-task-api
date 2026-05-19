@@ -1,6 +1,7 @@
 package com.nhnacademy.taskapi.controller;
 
 import com.nhnacademy.taskapi.dto.project.ProjectCreateRequest;
+import com.nhnacademy.taskapi.dto.project_member.ProjectMemberAddRequest;
 import com.nhnacademy.taskapi.dto.project_member.ProjectMemberResponse;
 import com.nhnacademy.taskapi.service.ProjectMemberService;
 import jakarta.validation.Valid;
@@ -35,9 +36,9 @@ public class ProjectMemberController {
     public ResponseEntity<ProjectMemberResponse> addProjectMember(
             @PathVariable("projectId") Long projectId,
             @RequestHeader("X-User-Id") String userId,
-            @Valid @RequestBody ProjectCreateRequest req
+            @Valid @RequestBody ProjectMemberAddRequest req
             ) {
-        ProjectMemberResponse resp=projectMemberService.addMember(projectId, userId, req.name());
+        ProjectMemberResponse resp=projectMemberService.addMember(projectId, userId, req.userId());
 
         return ResponseEntity.ok(resp);
     }
@@ -49,8 +50,9 @@ public class ProjectMemberController {
             @PathVariable("userId") String memberId,
             @RequestHeader("X-User-Id") String userId
     ) {
+        projectMemberService.deleteMember(projectId, userId, memberId);
 
-        return null;
+        return ResponseEntity.noContent().build();
     }
 
 }
