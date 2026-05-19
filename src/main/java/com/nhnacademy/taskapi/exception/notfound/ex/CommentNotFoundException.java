@@ -4,15 +4,15 @@ import com.nhnacademy.taskapi.exception.notfound.ResourceNotFoundException;
 
 public class CommentNotFoundException extends ResourceNotFoundException {
 
-     private static final String defaultTemplate="일치하는 Comment가 없습니다.";
-     private static final String idMessageTemplate="id %d에 해당하는 Comment가 없습니다.";
+     private static final String Default_Template="일치하는 Comment가 없습니다.";
+     private static final String ID_Message_Template ="id %d에 해당하는 Comment가 없습니다.";
 
      public CommentNotFoundException() {
-         super(defaultTemplate);
+         super(Default_Template);
      }
 
      public CommentNotFoundException(Long id) {
-         super(String.format(idMessageTemplate, id));
+         super(String.format(ID_Message_Template, id));
      }
     public CommentNotFoundException(String message) {
         super(message);
