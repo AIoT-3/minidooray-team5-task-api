@@ -41,7 +41,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
                 .userId(m.getUserId())
                 .admin(m.isAdmin())
                 .build()
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     // 프로젝트 멤버 추가

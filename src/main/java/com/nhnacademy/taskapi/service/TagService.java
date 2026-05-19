@@ -3,7 +3,6 @@ package com.nhnacademy.taskapi.service;
 import com.nhnacademy.taskapi.dto.tag.TagCreateRequest;
 import com.nhnacademy.taskapi.dto.tag.TagResponse;
 import com.nhnacademy.taskapi.dto.tag.TagUpdateRequest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

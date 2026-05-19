@@ -142,6 +142,7 @@ public class CommentServiceImplTest {
         void fail_taskNotFound() {
             // given
             String content="comment1";
+            CommentCreateRequest req=new CommentCreateRequest(content);
 
             // when
             when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
@@ -149,7 +150,7 @@ public class CommentServiceImplTest {
             // then
             assertThrows(
                     TaskNotFoundException.class,
-                    () -> commentService.createComment(projectId, userId, taskId, new CommentCreateRequest(content))
+                    () -> commentService.createComment(projectId, userId, taskId, req)
             );
         }
     }
@@ -281,6 +282,7 @@ public class CommentServiceImplTest {
             // given
             Long commentId = 1L;
             String newContent = "updatedComment";
+            CommentUpdateRequest req=new CommentUpdateRequest(newContent);
 
             // when
             when(commentRepository.findById(commentId)).thenReturn(Optional.empty());
@@ -288,7 +290,7 @@ public class CommentServiceImplTest {
             // then
             assertThrows(
                     CommentNotFoundException.class,
-                    () -> commentService.updateComment(projectId, userId, taskId, commentId, new CommentUpdateRequest(newContent))
+                    () -> commentService.updateComment(projectId, userId, taskId, commentId, req)
             );
         }
 
@@ -312,6 +314,7 @@ public class CommentServiceImplTest {
                     .task(task)
                     .build();
             ReflectionTestUtils.setField(comment, "id", commentId);
+            CommentUpdateRequest req=new CommentUpdateRequest(newContent);
 
             // when
             when(commentRepository.findById(commentId)).thenReturn(Optional.ofNullable(comment));
@@ -319,7 +322,7 @@ public class CommentServiceImplTest {
             // then
             assertThrows(
                     CommentNotAllowException.class,
-                    () -> commentService.updateComment(projectId, userId, taskId, commentId, new CommentUpdateRequest(newContent))
+                    () -> commentService.updateComment(projectId, userId, taskId, commentId, req)
             );
         }
 
@@ -343,6 +346,7 @@ public class CommentServiceImplTest {
                     .task(task)
                     .build();
             ReflectionTestUtils.setField(comment, "id", commentId);
+            CommentUpdateRequest req= new CommentUpdateRequest(newContent);
 
             // when
             when(commentRepository.findById(commentId)).thenReturn(Optional.ofNullable(comment));
@@ -350,7 +354,7 @@ public class CommentServiceImplTest {
             // then
             assertThrows(
                     CommentNotAllowException.class,
-                    () -> commentService.updateComment(projectId, userId, taskId, commentId, new CommentUpdateRequest(newContent))
+                    () -> commentService.updateComment(projectId, userId, taskId, commentId, req)
             );
         }
     }

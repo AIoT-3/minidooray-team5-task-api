@@ -223,9 +223,9 @@ public class ProjectServiceImplTest {
         void fail_projectMemberNotFound() {
             // when
             when(projectMemberRepository.findByProject_IdAndUserId(projectId, userId)).thenReturn(Optional.empty());
-
+            ProjectUpdateRequest req=new ProjectUpdateRequest("project1_updated", ProjectStatus.ACTIVE);
             // then
-            assertThrows(ProjectMemberNotFoundException.class, () -> projectService.updateProject(projectId, new ProjectUpdateRequest("project1_updated", ProjectStatus.ACTIVE), userId));
+            assertThrows(ProjectMemberNotFoundException.class, () -> projectService.updateProject(projectId, req, userId));
         }
 
         @Test
@@ -239,9 +239,10 @@ public class ProjectServiceImplTest {
 
             // when
             when(projectMemberRepository.findByProject_IdAndUserId(projectId, userId)).thenReturn(Optional.ofNullable(projectMember));
+            ProjectUpdateRequest req=new ProjectUpdateRequest("project1_updated", ProjectStatus.ACTIVE);
 
             // then
-            assertThrows(ProjectNotAllowException.class, () -> projectService.updateProject(projectId, new ProjectUpdateRequest("project1_updated", ProjectStatus.ACTIVE), userId));
+            assertThrows(ProjectNotAllowException.class, () -> projectService.updateProject(projectId, req, userId));
         }
 
         @Test
@@ -256,9 +257,10 @@ public class ProjectServiceImplTest {
             // when
             when(projectMemberRepository.findByProject_IdAndUserId(projectId, userId)).thenReturn(Optional.ofNullable(projectMember));
             when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+            ProjectUpdateRequest req=new ProjectUpdateRequest("project1_updated", ProjectStatus.ACTIVE);
 
             // then
-            assertThrows(ProjectNotFoundException.class, () -> projectService.updateProject(projectId, new ProjectUpdateRequest("project1_updated", ProjectStatus.ACTIVE), userId));
+            assertThrows(ProjectNotFoundException.class, () -> projectService.updateProject(projectId, req, userId));
         }
     }
 

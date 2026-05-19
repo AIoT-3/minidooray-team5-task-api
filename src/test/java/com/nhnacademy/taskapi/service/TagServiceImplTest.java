@@ -168,13 +168,14 @@ public class TagServiceImplTest {
             // given
             Long tagId = 1L;
             String newName = "newTagName";
+            TagUpdateRequest req=new TagUpdateRequest(newName);
 
             // when
             when(tagRepository.findById(tagId)).thenReturn(Optional.empty());
 
             // then
             assertThrows(TagNotFoundException.class,
-                    () -> tagService.updateTag(projectId, userId, tagId, new TagUpdateRequest(newName)));
+                    () -> tagService.updateTag(projectId, userId, tagId, req));
         }
     }
 
