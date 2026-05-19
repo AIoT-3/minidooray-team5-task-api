@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.dto.task.TaskCreateRequest;
 import com.nhnacademy.taskapi.dto.task.TaskDetailResponse;
 import com.nhnacademy.taskapi.dto.task.TaskSummaryResponse;
 import com.nhnacademy.taskapi.dto.task.TaskUpdateRequest;
+import com.nhnacademy.taskapi.service.TaskService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class TaskControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private TaskController controller;
+    private TaskService service;
 
     private final String BASE_URL="/api/tasks/projects/{projectId}/tasks";
     private final String USER_ID_HEADER="X-User-Id";
@@ -52,8 +53,8 @@ public class TaskControllerTest {
                 List.of(),
                 2
         );
-        given(controller.getTasksByProject(projectId, userId))
-                .willReturn(ResponseEntity.ok(List.of(resp1, resp2)));
+        given(service.getTasks(projectId, userId))
+                .willReturn(List.of(resp1, resp2));
 
         // when & then
         mockMvc.perform(get(BASE_URL, projectId)
@@ -84,8 +85,8 @@ public class TaskControllerTest {
                 null,
                 List.of()
         );
-        given(controller.createTask(projectId, userId, new TaskCreateRequest("New Task", "Task description", projectId)))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.createTask(projectId, userId, new TaskCreateRequest("New Task", "Task description", projectId)))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL, projectId)
@@ -114,8 +115,8 @@ public class TaskControllerTest {
                 null,
                 List.of()
         );
-        given(controller.getTask(projectId, taskId, userId))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.getTask(projectId, taskId, userId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(get(BASE_URL+"/{taskId}", projectId, taskId)
@@ -143,8 +144,8 @@ public class TaskControllerTest {
                 null,
                 List.of()
         );
-        given(controller.updateTask(projectId, taskId, userId, new TaskUpdateRequest("Updated Task", "Updated description", null, List.of())))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.updateTask(projectId, userId, taskId, new TaskUpdateRequest("Updated Task", "Updated description", null, List.of())))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL+"/{taskId}", projectId, taskId)
@@ -165,8 +166,6 @@ public class TaskControllerTest {
     void deleteTask() throws Exception {
         // given
         Long taskId=1L;
-        given(controller.deleteTask(projectId, taskId, userId))
-                .willReturn(ResponseEntity.noContent().build());
 
         // when & then
         mockMvc.perform(delete(BASE_URL+"/{taskId}", projectId, taskId)

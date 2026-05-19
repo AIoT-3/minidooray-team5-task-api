@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.controller;
 import com.nhnacademy.taskapi.dto.comment.CommentCreateRequest;
 import com.nhnacademy.taskapi.dto.comment.CommentResponse;
 import com.nhnacademy.taskapi.dto.comment.CommentUpdateRequest;
+import com.nhnacademy.taskapi.service.CommentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class CommentControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private CommentController commentController;
+    private CommentService service;
 
     private final String BASE_URL="/api/tasks/projects/{projectId}/tasks/{taskId}/comments";
     private final String USER_ID_HEADER="X-User-Id";
@@ -52,8 +53,8 @@ public class CommentControllerTest {
                 "content 2"
         );
 
-        given(commentController.getCommentsByTask(projectId, taskId, userId))
-                .willReturn(ResponseEntity.ok(List.of(resp1, resp2)));
+        given(service.getCommentsByTask(projectId, userId, taskId))
+                .willReturn(List.of(resp1, resp2));
 
         // when & then
         mockMvc.perform(get(BASE_URL, projectId, taskId)
@@ -78,8 +79,8 @@ public class CommentControllerTest {
                 "content 1"
         );
 
-        given(commentController.createComment(projectId, taskId, userId, new CommentCreateRequest("content 1")))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.createComment(projectId, userId, taskId, new CommentCreateRequest("content 1")))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL, projectId, taskId)
@@ -109,8 +110,8 @@ public class CommentControllerTest {
                 "content 1"
         );
 
-        given(commentController.getComment(projectId, taskId, commentId, userId))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.getComment(projectId, userId, taskId, commentId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(get(BASE_URL+"/{commentId}", projectId, taskId, commentId)
@@ -134,8 +135,8 @@ public class CommentControllerTest {
                 "updated content"
         );
 
-        given(commentController.updateComment(projectId, taskId, commentId, userId, new CommentUpdateRequest("updated content")))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.updateComment(projectId, userId, taskId, commentId, new CommentUpdateRequest("updated content")))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL+"/{commentId}", projectId, taskId, commentId)
@@ -159,8 +160,6 @@ public class CommentControllerTest {
         // given
         Long commentId=1L;
 
-        given(commentController.deleteComment(projectId, taskId, commentId, userId))
-                .willReturn(ResponseEntity.noContent().build());
 
         // when & then
         mockMvc.perform(delete(BASE_URL+"/{commentId}", projectId, taskId, commentId)

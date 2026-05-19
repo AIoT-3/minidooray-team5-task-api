@@ -2,6 +2,7 @@ package com.nhnacademy.taskapi.controller;
 
 import com.nhnacademy.taskapi.dto.project_member.ProjectMemberAddRequest;
 import com.nhnacademy.taskapi.dto.project_member.ProjectMemberResponse;
+import com.nhnacademy.taskapi.service.ProjectMemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class ProjectMemberControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ProjectMemberController controller;
+    private ProjectMemberService service;
 
     private final String BASE_URL="/api/tasks/projects/{projectId}/members";
     private final String USER_ID_HEADER="X-User-Id";
@@ -44,8 +45,8 @@ public class ProjectMemberControllerTest {
                 "testUser2",
                 false
         );
-        given(controller.getProjectMembers(projectId, userId))
-                .willReturn(ResponseEntity.ok(List.of(resp1, resp2)));
+        given(service.getMembers(projectId, userId))
+                .willReturn(List.of(resp1, resp2));
 
         // when & then
         mockMvc.perform(get(BASE_URL, projectId)
@@ -67,8 +68,8 @@ public class ProjectMemberControllerTest {
                 newMemberId,
                 false
         );
-        given(controller.addProjectMember(projectId, userId, new ProjectMemberAddRequest(newMemberId)))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.addMember(projectId, userId, newMemberId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL, projectId)
@@ -85,8 +86,6 @@ public class ProjectMemberControllerTest {
     void removeProjectMember() throws Exception {
         // given
         String memberIdToRemove="removeUser";
-        given(controller.removeProjectMember(projectId, memberIdToRemove, userId))
-                .willReturn(ResponseEntity.noContent().build());
 
         // when & then
         mockMvc.perform(delete(BASE_URL+"/{userId}", projectId, memberIdToRemove)

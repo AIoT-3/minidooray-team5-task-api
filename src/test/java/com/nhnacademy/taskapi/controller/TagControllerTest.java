@@ -3,6 +3,7 @@ package com.nhnacademy.taskapi.controller;
 import com.nhnacademy.taskapi.dto.tag.TagCreateRequest;
 import com.nhnacademy.taskapi.dto.tag.TagResponse;
 import com.nhnacademy.taskapi.dto.tag.TagUpdateRequest;
+import com.nhnacademy.taskapi.service.TagService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class TagControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private TagController controller;
+    private TagService service;
 
     private final String BASE_URL="/api/tasks/projects/{projectId}/tags";
     private final String USER_ID_HEADER="X-User-Id";
@@ -47,8 +48,8 @@ public class TagControllerTest {
                 "Tag 2"
         );
 
-        given(controller.getTagsByProject(projectId, userId))
-                .willReturn(ResponseEntity.ok(List.of(resp1, resp2)));
+        given(service.getTagsByProjectId(projectId, userId))
+                .willReturn(List.of(resp1, resp2));
 
         // when & then
         mockMvc.perform(get(BASE_URL, projectId)
@@ -70,8 +71,8 @@ public class TagControllerTest {
                 "New Tag"
         );
 
-        given(controller.createTag(projectId, userId, new TagCreateRequest("New Tag")))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.createTag(projectId, userId, new TagCreateRequest("New Tag")))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL, projectId)
@@ -92,8 +93,8 @@ public class TagControllerTest {
                 "Updated Tag"
         );
 
-        given(controller.updateTag(projectId, tagId, userId, new TagUpdateRequest("Updated Tag")))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.updateTag(projectId, userId, tagId, new TagUpdateRequest("Updated Tag")))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL + "/{tagId}", projectId, tagId)
@@ -109,8 +110,6 @@ public class TagControllerTest {
     @DisplayName("태그 삭제")
     void deleteTag() throws Exception {
         // given
-        given(controller.deleteTag(projectId, tagId, userId))
-                .willReturn(ResponseEntity.noContent().build());
 
         // when & then
         mockMvc.perform(delete(BASE_URL + "/{tagId}", projectId, tagId)

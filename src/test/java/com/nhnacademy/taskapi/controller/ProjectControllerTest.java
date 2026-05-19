@@ -4,6 +4,7 @@ import com.nhnacademy.taskapi.dto.project.ProjectCreateRequest;
 import com.nhnacademy.taskapi.dto.project.ProjectResponse;
 import com.nhnacademy.taskapi.dto.project.ProjectUpdateRequest;
 import com.nhnacademy.taskapi.entity.ProjectStatus;
+import com.nhnacademy.taskapi.service.ProjectService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ProjectControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ProjectController controller;
+    private ProjectService service;
 
     private final String BASE_URL = "/api/tasks/projects";
     private final String USER_ID_HEADER = "X-User-Id";
@@ -52,8 +53,8 @@ public class ProjectControllerTest {
                 false
         );
 
-        given(controller.getProjects(userId))
-                .willReturn(ResponseEntity.ok(List.of(resp1, resp2)));
+        given(service.getProjects(userId))
+                .willReturn(List.of(resp1, resp2));
 
         // when & then
         mockMvc.perform(get(BASE_URL)
@@ -81,8 +82,8 @@ public class ProjectControllerTest {
                 true
         );
 
-        given(controller.createProject(new ProjectCreateRequest("Project 1"), userId))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.createProject(new ProjectCreateRequest("Project 1"), userId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL)
@@ -113,8 +114,8 @@ public class ProjectControllerTest {
                 true
         );
 
-        given(controller.getProject(projectId, userId))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.getProject(projectId, userId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(get(BASE_URL+"/{projectId}", projectId)
@@ -138,8 +139,8 @@ public class ProjectControllerTest {
                 true
         );
 
-        given(controller.updateProject(projectId, userId, new ProjectUpdateRequest("Project 1 Updated", ProjectStatus.ACTIVE)))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.updateProject(projectId, new ProjectUpdateRequest("Project 1 Updated", ProjectStatus.ACTIVE), userId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL+"/{projectId}", projectId)
@@ -164,8 +165,6 @@ public class ProjectControllerTest {
     @DisplayName("프로젝트 삭제")
     void deleteProject() throws Exception {
         // given
-        given(controller.deleteProject(projectId, userId))
-                .willReturn(ResponseEntity.noContent().build());
 
         // when & then
         mockMvc.perform(delete(BASE_URL+"/{projectId}", projectId)

@@ -4,12 +4,12 @@ import com.nhnacademy.taskapi.dto.milestone.MilestoneCreateRequest;
 import com.nhnacademy.taskapi.dto.milestone.MilestoneResponse;
 import com.nhnacademy.taskapi.dto.milestone.MilestoneUpdateRequest;
 import com.nhnacademy.taskapi.entity.MilestoneStatus;
+import com.nhnacademy.taskapi.service.MilestoneService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,7 +27,7 @@ public class MilestoneControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private MilestoneController controller;
+    private MilestoneService service;
 
     private final String BASE_URL="/api/tasks/projects/{projectId}/milestones";
     private final String USER_ID_HEADER="X-User-Id";
@@ -49,8 +49,8 @@ public class MilestoneControllerTest {
                 "Milestone 2",
                 MilestoneStatus.OPEN
         );
-        given(controller.getMilestonesByProject(projectId, userId))
-                .willReturn(ResponseEntity.ok(List.of(resp1, resp2)));
+        given(service.getMilestoneList(projectId, userId))
+                .willReturn(List.of(resp1, resp2));
 
         // when & then
         mockMvc.perform(get(BASE_URL, projectId)
@@ -74,8 +74,8 @@ public class MilestoneControllerTest {
                 "Milestone 1",
                 MilestoneStatus.IN_PROGRESS
         );
-        given(controller.createMilestone(projectId, userId, new MilestoneCreateRequest("Milestone 1")))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.createMilestone(projectId, userId, new MilestoneCreateRequest("Milestone 1")))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL, projectId)
@@ -104,8 +104,8 @@ public class MilestoneControllerTest {
                 "Milestone 1",
                 MilestoneStatus.IN_PROGRESS
         );
-        given(controller.getMilestone(projectId, milestoneId, userId))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.getMilestone(projectId, userId, milestoneId))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(get(BASE_URL + "/{milestoneId}", projectId, milestoneId)
@@ -127,8 +127,8 @@ public class MilestoneControllerTest {
                 "Milestone 1 Updated",
                 MilestoneStatus.IN_PROGRESS
         );
-        given(controller.updateMilestone(projectId, milestoneId, userId, new MilestoneUpdateRequest("Milestone 1 Updated", MilestoneStatus.IN_PROGRESS)))
-                .willReturn(ResponseEntity.ok(resp));
+        given(service.updateMilestone(projectId, userId, milestoneId, new MilestoneUpdateRequest("Milestone 1 Updated", MilestoneStatus.IN_PROGRESS)))
+                .willReturn(resp);
 
         // when & then
         mockMvc.perform(post(BASE_URL + "/{milestoneId}", projectId, milestoneId)
@@ -153,8 +153,6 @@ public class MilestoneControllerTest {
     void deleteMilestone() throws Exception {
         // given
         Long milestoneId=1L;
-        given(controller.deleteMilestone(projectId, milestoneId, userId))
-                .willReturn(ResponseEntity.noContent().build());
 
         // when & then
         mockMvc.perform(delete(BASE_URL + "/{milestoneId}", projectId, milestoneId)
