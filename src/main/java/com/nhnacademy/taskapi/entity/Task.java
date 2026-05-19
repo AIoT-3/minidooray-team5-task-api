@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
@@ -37,10 +38,10 @@ public class Task {
     private Milestone milestone;
 
     @OneToMany(mappedBy="task")
-    private List<TaskTag> taskTags;
+    private List<TaskTag> taskTags=new ArrayList<>();
 
     @OneToMany(mappedBy = "task")
-    private List<Comment> comments;
+    private List<Comment> comments=new ArrayList<>();
 
     @Builder
     public Task(String title, String content, String userId, Project project) {
