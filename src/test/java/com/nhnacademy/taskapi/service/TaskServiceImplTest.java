@@ -84,7 +84,7 @@ public class TaskServiceImplTest {
         }
 
         @Test
-        @DisplayName("테스트 생성 - 프로젝트 존재 X")
+        @DisplayName("테스크 생성 - 프로젝트 존재 X")
         void test_createTask_projectNotFound() {
             // given
             Long projectId=1L;
