@@ -132,7 +132,7 @@ public class TaskControllerTest {
     }
 
     @Test
-    @DisplayName("테스트 수정")
+    @DisplayName("테스크 수정")
     void updateTask() throws Exception {
         // given
         Long taskId=1L;
