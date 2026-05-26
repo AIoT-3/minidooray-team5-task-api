@@ -54,7 +54,7 @@ public class TaskServiceImplTest {
     class CreateTaskTest {
         @Test
         @DisplayName("테스크 생성 - 성공")
-        public void test_createTask_success() {
+        void test_createTask_success() {
             // given
             Long projectId=1L;
             String userId="taskUser1";
@@ -84,8 +84,8 @@ public class TaskServiceImplTest {
         }
 
         @Test
-        @DisplayName("테스트 생성 - 프로젝트 존재 X")
-        public void test_createTask_projectNotFound() {
+        @DisplayName("테스크 생성 - 프로젝트 존재 X")
+        void test_createTask_projectNotFound() {
             // given
             Long projectId=1L;
             String userId="taskUser1";
@@ -106,7 +106,7 @@ public class TaskServiceImplTest {
     class GetTaskListTest {
         @Test
         @DisplayName("테스크 리스트 조회 - 성공")
-        public void test_getTasks_success() {
+        void test_getTasks_success() {
             // given
             Long projectId=1L;
             String userId="taskUser";
@@ -143,7 +143,7 @@ public class TaskServiceImplTest {
     class GetTaskDetailTest {
         @Test
         @DisplayName("테스크 상세 조회 - 성공")
-        public void test_getTask_success() {
+        void test_getTask_success() {
             // given
             Long projectId=1L;
             String userId="taskUser";
@@ -176,7 +176,7 @@ public class TaskServiceImplTest {
 
         @Test
         @DisplayName("테스크 상세 조회 - 테스크 존재 X")
-        public void test_getTask_taskNotFound() {
+        void test_getTask_taskNotFound() {
             // given
             Long projectId=1L;
             String userId="taskUser";
@@ -197,7 +197,7 @@ public class TaskServiceImplTest {
     class UpdateTaskTest {
         @Test
         @DisplayName("테스크 업데이트 - 성공")
-        public void test_updateTask_success() {
+        void test_updateTask_success() {
             // given
             Long projectId=1L;
             String userId="taskUser";
@@ -229,7 +229,7 @@ public class TaskServiceImplTest {
 
         @Test
         @DisplayName("테스크 업데이트 - 테스크 존재 X")
-        public void test_updateTask_taskNotFound() {
+        void test_updateTask_taskNotFound() {
             // given
             Long projectId=1L;
             String userId="taskUser";
@@ -250,7 +250,7 @@ public class TaskServiceImplTest {
     class DeleteTaskTest {
         @Test
         @DisplayName("테스크 삭제 - 성공")
-        public void test_deleteTask_success() {
+        void test_deleteTask_success() {
             // given
             Long projectId=1L;
             String userId="taskUser";
@@ -276,7 +276,7 @@ public class TaskServiceImplTest {
 
         @Test
         @DisplayName("테스크 삭제 - 테스크 존재 X")
-        public void test_deleteTask_taskNotFound() {
+        void test_deleteTask_taskNotFound() {
             // given
             Long projectId=1L;
             String userId="taskUser";

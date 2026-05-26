@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -65,7 +64,7 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$[0].commentId").value(resp1.commentId()))
                 .andExpect(jsonPath("$[0].content").value(resp1.content()))
                 .andExpect(jsonPath("$[1].commentId").value(resp2.commentId()))
-                .andExpect(jsonPath("$[1].content").value(resp2.content()));;
+                .andExpect(jsonPath("$[1].content").value(resp2.content()));
     }
 
     @Test

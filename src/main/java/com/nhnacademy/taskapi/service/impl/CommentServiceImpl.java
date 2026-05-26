@@ -31,12 +31,12 @@ public class CommentServiceImpl implements CommentService {
     private final TaskRepository taskRepository;
     private final ProjectMemberRepository projectMemberRepository;
 
-    // 프로젝트 내 테스트의 모든 댓글 조회
+    // 프로젝트 내 테스크의 모든 댓글 조회
     @Override
     public List<CommentResponse> getCommentsByTask(Long projectId, String userId, Long taskId) {
         checkUser(projectId, userId);
 
-        // 프로젝트 내 테스트의 모든 댓글 조회
+        // 프로젝트 내 테스크의 모든 댓글 조회
         List<Comment> comments=commentRepository.findAllByTask_Id(taskId);
 
         // 응답 반환 Comment -> CommentResponse
